@@ -1,59 +1,75 @@
-const characterAmountRange = document.getElementById('characterAmountRange')
-const characterAmountNumber = document.getElementById('characterAmountNumber')
-const includeUppercaseElement = document.getElementById('includeUppercase')
-const includeNumbersElement = document.getElementById('includeNumbers')
-const includeSymbolsElement = document.getElementById('includeSymbols')
-const form = document.getElementById('passwordGeneratorForm')
-const passwordDisplay = document.getElementById('passwordDisplay')
+//  (actualWords / totalTimeTaken) * 60;
 
-const UPPERCASE_CHAR_CODES = arrayFromLowToHigh(65, 90)
-const LOWERCASE_CHAR_CODES = arrayFromLowToHigh(97, 122)
-const NUMBER_CHAR_CODES = arrayFromLowToHigh(48, 57)
-const SYMBOL_CHAR_CODES = arrayFromLowToHigh(33, 47).concat(
-  arrayFromLowToHigh(58, 64)
-).concat(
-  arrayFromLowToHigh(91, 96)
-).concat(
-  arrayFromLowToHigh(123, 126)
-)
+const typing_ground = document.querySelector('#textarea');
+const btn = document.querySelector('#btn');
+const score = document.querySelector('#score');
+const show_sentence = document.querySelector('#showSentence');
 
-characterAmountNumber.addEventListener('input', syncCharacterAmount)
-characterAmountRange.addEventListener('input', syncCharacterAmount)
+let startTime, endTime, totalTimeTaken;
 
-form.addEventListener('submit', e => {
-  e.preventDefault()
-  const characterAmount = characterAmountNumber.value
-  const includeUppercase = includeUppercaseElement.checked
-  const includeNumbers = includeNumbersElement.checked
-  const includeSymbols = includeSymbolsElement.checked
-  const password = generatePassword(characterAmount, includeUppercase, includeNumbers, includeSymbols)
-  passwordDisplay.innerText = password
+
+const sentences = ['The quick brown fox jumps over the lazy dog 1',
+    'The quick brown fox jumps over the lazy dog 2',
+    'The quick brown fox jumps over the lazy dog 3 ']
+
+// step 5
+
+const calculateTypingSpeed = (time_taken) => {
+    let  totalWords = typing_ground.value.trim();
+    let actualWords = totalWords === '' ? 0 : totalWords.split(" ").length;
+
+    if(actualWords !== 0) {
+        let typing_speed  =  (actualWords / time_taken) * 60;
+        typing_speed = Math.round(typing_speed);
+        score.innerHTML = `Your typing speed is ${typing_speed} words per minutes & you wrote ${actualWords} words & time taken ${time_taken} sec`;
+    }else{
+        score.innerHTML = `Your typing speed is 0 words per minutes & time taken ${time_taken} sec`;
+    }
+}
+
+// step 4
+const endTypingTest = () => {
+    btn.innerText = "Start";
+
+    let date = new Date();
+    endTime = date.getTime();
+
+    totalTimeTaken = (endTime -startTime) / 1000;
+
+    // console.log(totalTimeTaken);
+
+    calculateTypingSpeed(totalTimeTaken);
+
+    show_sentence.innerHTML = "";
+    typing_ground.value = "";
+}
+
+
+// step 3
+const startTyping = () => {
+    let randomNumber = Math.floor(Math.random() * sentences.length);
+    // console.log(randomNumber);
+    show_sentence.innerHTML = sentences[randomNumber];
+
+    let date = new Date();
+    startTime = date.getTime();
+
+    btn.innerText = "Done";
+}
+// step 2
+btn.addEventListener('click', () => {
+    switch (btn.innerText.toLowerCase()) {
+        case "start":
+            typing_ground.removeAttribute('disabled');
+            startTyping();
+            break;
+
+        case "done":
+            typing_ground.setAttribute('disabled' , 'true');
+            endTypingTest();
+            break;
+    }
 })
 
-function generatePassword(characterAmount, includeUppercase, includeNumbers, includeSymbols) {
-  let charCodes = LOWERCASE_CHAR_CODES
-  if (includeUppercase) charCodes = charCodes.concat(UPPERCASE_CHAR_CODES)
-  if (includeSymbols) charCodes = charCodes.concat(SYMBOL_CHAR_CODES)
-  if (includeNumbers) charCodes = charCodes.concat(NUMBER_CHAR_CODES)
-  
-  const passwordCharacters = []
-  for (let i = 0; i < characterAmount; i++) {
-    const characterCode = charCodes[Math.floor(Math.random() * charCodes.length)]
-    passwordCharacters.push(String.fromCharCode(characterCode))
-  }
-  return passwordCharacters.join('')
-}
 
-function arrayFromLowToHigh(low, high) {
-  const array = []
-  for (let i = low; i <= high; i++) {
-    array.push(i)
-  }
-  return array
-}
 
-function syncCharacterAmount(e) {
-  const value = e.target.value
-  characterAmountNumber.value = value
-  characterAmountRange.value = value
-}
