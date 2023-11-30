@@ -1,26 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>typing test</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="script.js" defer></script>
+  <link rel="stylesheet" href="styles.css">
+  <title>Password Generator</title>
 </head>
 <body>
+  <div class="container">
+    <h1 class="title">Password Generator</h1>
+    <h3 class="password-display" id="passwordDisplay">password</h3>
+    <form id="passwordGeneratorForm" class="form">
+      <label for="characterAmountNumber">Number Of Characters</label>
+      <div class="character-amount-container">
+        <input type="range" min="1" max="50" value="10" id="characterAmountRange">
+        <input class="number-input" type="number" min="1" max="50" value="10" id="characterAmountNumber">
+      </div>
 
-<section class="main-body">
-    <h2>Typing Speed test</h2>
-    <p id="showSentence"></p>
+      <label for="includeUppercase">Include Uppercase</label>
+      <input type="checkbox" id="includeUppercase">
 
-    <div class="typing_section">
-        <label for="textarea"></label>
-        <textarea name="textarea" id="textarea" cols="30" rows="10" disabled></textarea>
-        <br>
-        <button id="btn">Start</button>
-    </div>
+      <label for="includeNumbers">Include Numbers</label>
+      <input type="checkbox" id="includeNumbers">
 
-    <p id="score"></p>
-</section>
+      <label for="includeSymbols">Include Symbols</label>
+      <input type="checkbox" id="includeSymbols">
 
-<script src="script.js"></script>
+      <button type="submit" class="btn">Generate Password</button>
+    </form>
+  </div>
 </body>
 </html>
